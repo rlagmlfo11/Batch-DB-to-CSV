@@ -61,7 +61,7 @@ public class batchConfig {
 	public FlatFileItemWriter<Player> csvFileWriter() {
 		FlatFileItemWriter<Player> writer = new FlatFileItemWriter<>();
 		writer.setResource(new FileSystemResource("src/main/resources/output_Player.csv"));
-		writer.setAppendAllowed(true);
+		writer.setAppendAllowed(false);
 		writer.setHeaderCallback(headerCallback()); // Set the header callback here
 
 		writer.setLineAggregator(new DelimitedLineAggregator<Player>() {
