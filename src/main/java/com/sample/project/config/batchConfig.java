@@ -1,5 +1,8 @@
 package com.sample.project.config;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.BatchStatus;
@@ -14,6 +17,7 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
@@ -45,11 +49,22 @@ public class batchConfig {
 	}
 
 	@Bean
-	public FlatFileItemWriter<Player> csvFileItemWriter() {
-		FlatFileItemWriter<Player> csvFileWriter = new FlatFileItemWriter<>();
-		csvFileWriter.setResource(new FileSystemResource("src/main/resources/output_Player.csv"));
-		csvFileWriter.setAppendAllowed(true);
-		csvFileWriter.setLineAggregator(new DelimitedLineAggregator<Player>() {
+	public FlatFileHeaderCallback headerCallback() {
+		return new FlatFileHeaderCallback() {
+			public void writeHeader(Writer writer) throws IOException {
+				writer.write("ID,AGE,GENDER,MAIL,NAME");
+			}
+		};
+	}
+
+	@Bean
+	public FlatFileItemWriter<Player> csvFileWriter() {
+		FlatFileItemWriter<Player> writer = new FlatFileItemWriter<>();
+		writer.setResource(new FileSystemResource("src/main/resources/output_Player.csv"));
+		writer.setAppendAllowed(true);
+		writer.setHeaderCallback(headerCallback()); // Set the header callback here
+
+		writer.setLineAggregator(new DelimitedLineAggregator<Player>() {
 			{
 				setDelimiter(",");
 				setFieldExtractor(new BeanWrapperFieldExtractor<Player>() {
@@ -59,7 +74,8 @@ public class batchConfig {
 				});
 			}
 		});
-		return csvFileWriter;
+
+		return writer;
 	}
 
 	@Bean
