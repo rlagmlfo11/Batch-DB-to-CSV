@@ -27,17 +27,21 @@ public class Player {
 	@Column(name = "MAIL")
 	private String mail;
 
+	@Column(name = "WAGE")
+	private int wage;
+
 	public Player() {
 
 	}
 
-	public Player(Long id, String name, int age, String gender, String mail) {
+	public Player(Long id, String name, int age, String gender, String mail, int wage) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
 		this.mail = mail;
+		this.wage = wage;
 	}
 
 	/**
@@ -108,6 +112,20 @@ public class Player {
 	 */
 	public void setMail(String mail) {
 		this.mail = mail;
+	}
+
+	/**
+	 * @return the wage
+	 */
+	public int getWage() {
+		return wage;
+	}
+
+	/**
+	 * @param wage the wage to set
+	 */
+	public void setWage(int wage) {
+		this.wage = wage;
 	}
 
 }

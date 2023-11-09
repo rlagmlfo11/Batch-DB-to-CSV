@@ -14,6 +14,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -43,7 +44,7 @@ public class batchConfig {
 	public JdbcCursorItemReader<Player> databaseCsvItemReader(DataSource dataSource) {
 		JdbcCursorItemReader<Player> databaseReader = new JdbcCursorItemReader<>();
 		databaseReader.setDataSource(dataSource);
-		databaseReader.setSql("SELECT id, age, gender, mail, name FROM player");
+		databaseReader.setSql("SELECT id, age, gender, mail, name,wage FROM player");
 		databaseReader.setRowMapper(new BeanPropertyRowMapper<>(Player.class));
 		return databaseReader;
 	}
@@ -52,7 +53,7 @@ public class batchConfig {
 	public FlatFileHeaderCallback headerCallback() {
 		return new FlatFileHeaderCallback() {
 			public void writeHeader(Writer writer) throws IOException {
-				writer.write("ID,AGE,GENDER,MAIL,NAME");
+				writer.write("ID,AGE,GENDER,MAIL,NAME,WAGE");
 			}
 		};
 	}
@@ -69,13 +70,35 @@ public class batchConfig {
 				setDelimiter(",");
 				setFieldExtractor(new BeanWrapperFieldExtractor<Player>() {
 					{
-						setNames(new String[] { "id", "age", "gender", "mail", "name" });
+						setNames(new String[] { "id", "age", "gender", "mail", "name", "wage" });
 					}
 				});
 			}
 		});
 
 		return writer;
+	}
+
+	@Bean
+	public ItemProcessor<Player, Player> playerFilterProcessor() {
+		return new ItemProcessor<Player, Player>() {
+			@Override
+			public Player process(Player player) throws Exception {
+				if (player.getWage() > 50) {
+					return player; // only return players with a wage greater than 50
+				}
+				return null; // players with wage 50 or below will be filtered out
+			}
+		};
+	}
+
+	@Bean
+	public Step databaseToCsvFileStep(ItemProcessor<Player, Player> playerFilterProcessor,
+			ItemWriter<Player> csvFileItemWriter, ItemReader<Player> databaseCsvItemReader) {
+		return stepBuilderFactory.get("databaseToCsvFileStep").<Player, Player>chunk(10)
+				.reader(databaseCsvItemReader).processor(playerFilterProcessor) // Add the processor
+																				// here
+				.writer(csvFileItemWriter).build();
 	}
 
 	@Bean
