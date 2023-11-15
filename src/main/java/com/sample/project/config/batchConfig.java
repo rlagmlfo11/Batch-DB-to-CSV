@@ -79,6 +79,7 @@ public class batchConfig {
 		return writer;
 	}
 
+	// 조건
 	@Bean
 	public ItemProcessor<Player, Player> playerFilterProcessor() {
 		return new ItemProcessor<Player, Player>() {
@@ -120,8 +121,7 @@ public class batchConfig {
 				.listener(listener).flow(databaseToCsvFileStep).end().build();
 	}
 
-	// Listener class
-	public static class JobCompletionNotificationListener extends JobExecutionListenerSupport {
+	public class JobCompletionNotificationListener extends JobExecutionListenerSupport {
 		@Override
 		public void afterJob(JobExecution jobExecution) {
 			if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
