@@ -1,5 +1,10 @@
-ID,AGE,GENDER,MAIL,NAME,WAGE
-1,21,man,fin@gmail.com,KIM,100
-2,31,man,PARK@gmail.com,PARK,90
-5,15,man,LEE@gmail.com,LEE,76
-6,29,man,KANG@gmail.com,KANG,53
+AGE,GENDER,MAIL,NAME,WAGE
+21,man,fin@gmail.com,aa,100
+31,man,PARK@gmail.com,bb,90
+41,man,RYU@gmail.com,cc,26
+21,man,LIM@gmail.com,dd,37
+15,man,LEE@gmail.com,ee,76
+29,man,KANG@gmail.com,qq,53
+25,man,WANG@gmail.com,ww,49
+63,man,WON@gmail.com,rr,34
+21,man,fin@gmail.com,zz,26

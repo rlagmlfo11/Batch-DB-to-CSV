@@ -12,14 +12,11 @@ import javax.persistence.Table;
 public class Player {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
 	@Column(name = "NAME")
 	private String name;
 
 	@Column(name = "AGE")
-	private int age;
+	private String age;
 
 	@Column(name = "GENDER")
 	private String gender;
@@ -28,34 +25,19 @@ public class Player {
 	private String mail;
 
 	@Column(name = "WAGE")
-	private int wage;
+	private String wage;
 
 	public Player() {
 
 	}
 
-	public Player(Long id, String name, int age, String gender, String mail, int wage) {
+	public Player(String name, String age, String gender, String mail, String wage) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
 		this.mail = mail;
 		this.wage = wage;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	/**
@@ -75,14 +57,14 @@ public class Player {
 	/**
 	 * @return the age
 	 */
-	public int getAge() {
+	public String getAge() {
 		return age;
 	}
 
 	/**
 	 * @param age the age to set
 	 */
-	public void setAge(int age) {
+	public void setAge(String age) {
 		this.age = age;
 	}
 
@@ -117,14 +99,14 @@ public class Player {
 	/**
 	 * @return the wage
 	 */
-	public int getWage() {
+	public String getWage() {
 		return wage;
 	}
 
 	/**
 	 * @param wage the wage to set
 	 */
-	public void setWage(int wage) {
+	public void setWage(String wage) {
 		this.wage = wage;
 	}
 
