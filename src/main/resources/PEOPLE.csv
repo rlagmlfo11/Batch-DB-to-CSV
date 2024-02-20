@@ -1,10 +1,10 @@
-PersonalName,PersonalAge,PersonalGender,PersonalMail
-aa,21,man,fin@gmail.com
-bb,31,man,PARK@gmail.com
-cc,41,man,RYU@gmail.com
-dd,21,man,LIM@gmail.com
-ee,15,man,LEE@gmail.com
-qq,29,man,KANG@gmail.com
-ww,25,man,WANG@gmail.com
-rr,63,man,WON@gmail.com
-zz,21,man,fin@gmail.com
+PersonalName,PersonalAge,PersonalGender,Boss1,Boss2,Boss3
+aa,21,man,RYU@gmail.com | 26,PARK@gmail.com | 90,KANG@gmail.com | 53
+bb,31,man,RYU@gmail.com | 26,PARK@gmail.com | 90,KANG@gmail.com | 53
+cc,41,man,LIM@gmail.com | 37,PARK@gmail.com | 90,KANG@gmail.com | 53
+dd,21,man,fin@gmail.com | 26,PARK@gmail.com | 90,KANG@gmail.com | 53
+ee,15,man,RYU@gmail.com | 26,PARK@gmail.com | 90,KANG@gmail.com | 53
+qq,29,man,fin@gmail.com | 100,fin@gmail.com | 26,KANG@gmail.com | 53
+ww,25,man,RYU@gmail.com | 26,KANG@gmail.com | 53,
+rr,63,man,RYU@gmail.com | 26,,
+zz,21,man,RYU@gmail.com | 26,PARK@gmail.com | 90,KANG@gmail.com | 53

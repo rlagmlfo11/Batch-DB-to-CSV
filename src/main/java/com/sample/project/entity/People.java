@@ -21,18 +21,30 @@ public class People {
 	@Column(name = "PersonalWage")
 	private String personalWage;
 
+	@Column(name = "boss1")
+	private String boss1;
+
+	@Column(name = "boss2")
+	private String boss2;
+
+	@Column(name = "boss3")
+	private String boss3;
+
 	public People() {
 
 	}
 
 	public People(String personalName, String personalAge, String personalGender,
-			String personalMail, String personalWage) {
+			String personalMail, String personalWage, String boss1, String boss2, String boss3) {
 		super();
 		this.personalName = personalName;
 		this.personalAge = personalAge;
 		this.personalGender = personalGender;
 		this.personalMail = personalMail;
 		this.personalWage = personalWage;
+		this.boss1 = boss1;
+		this.boss2 = boss2;
+		this.boss3 = boss3;
 	}
 
 	/**
@@ -103,6 +115,48 @@ public class People {
 	 */
 	public void setPersonalWage(String personalWage) {
 		this.personalWage = personalWage;
+	}
+
+	/**
+	 * @return the boss1
+	 */
+	public String getBoss1() {
+		return boss1;
+	}
+
+	/**
+	 * @param boss1 the boss1 to set
+	 */
+	public void setBoss1(String boss1) {
+		this.boss1 = boss1;
+	}
+
+	/**
+	 * @return the boss2
+	 */
+	public String getBoss2() {
+		return boss2;
+	}
+
+	/**
+	 * @param boss2 the boss2 to set
+	 */
+	public void setBoss2(String boss2) {
+		this.boss2 = boss2;
+	}
+
+	/**
+	 * @return the boss3
+	 */
+	public String getBoss3() {
+		return boss3;
+	}
+
+	/**
+	 * @param boss3 the boss3 to set
+	 */
+	public void setBoss3(String boss3) {
+		this.boss3 = boss3;
 	}
 
 }

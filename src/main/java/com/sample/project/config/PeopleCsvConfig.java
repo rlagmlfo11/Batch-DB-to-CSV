@@ -2,6 +2,7 @@ package com.sample.project.config;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -28,10 +29,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.sample.project.dto.PlayerRepository;
 import com.sample.project.entity.People;
 import com.sample.project.entity.Player;
-
-// 데이터베이스에있는 테이블과 csv의 항목명이 다를경우. wage도뺌
 
 @Configuration
 @EnableBatchProcessing
@@ -43,25 +43,90 @@ public class PeopleCsvConfig {
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
 
+	@Autowired
+	public PlayerRepository playerRepository;
+
 	@Bean
 	public JdbcCursorItemReader<Player> databaseCsvItemReader(DataSource dataSource) {
 		JdbcCursorItemReader<Player> databaseReader = new JdbcCursorItemReader<>();
 		databaseReader.setDataSource(dataSource);
-		databaseReader.setSql("SELECT age, gender, mail, name FROM player");
+		databaseReader.setSql("SELECT age, gender, mail, name, boss, wage FROM player");
 		databaseReader.setRowMapper(new BeanPropertyRowMapper<>(Player.class));
 		return databaseReader;
 	}
 
 	@Bean
 	public ItemProcessor<Player, People> playerProcessor() {
-		return player -> {
-			People people = new People();
-			people.setPersonalName(player.getName());
-			people.setPersonalAge(player.getAge());
-			people.setPersonalMail(player.getMail());
-			people.setPersonalWage(player.getWage());
-			people.setPersonalGender(player.getGender());
-			return people;
+		return new ItemProcessor<Player, People>() {
+			@Override
+			public People process(Player player) throws Exception {
+				People people = new People();
+				people.setPersonalName(player.getName());
+				people.setPersonalAge(player.getAge());
+//				people.setPersonalMail(player.getMail());
+				people.setPersonalWage(player.getWage());
+				people.setPersonalGender(player.getGender());
+
+				String[] setupParts = player.getBoss().split("\\|");
+
+				for (int i = 0; i < setupParts.length && i < 3; i++) {
+					String bossName = setupParts[i];
+					String bossMail = playerRepository.findMailByMail(bossName);
+					String bossWage = playerRepository.findMailByWage(bossName);
+
+					switch (i) {
+					case 0:
+						people.setBoss1(bossMail + " | " + bossWage);
+						break;
+					case 1:
+						people.setBoss2(bossMail + " | " + bossWage);
+						break;
+					case 2:
+						people.setBoss3(bossMail + " | " + bossWage);
+						break;
+					}
+				}
+
+//				for (int i = 0; i < setupParts.length && i < 3; i++) {
+//					String bossName = setupParts[i];
+//					Object[] mailAndWage = playerRepository.findMailAndWageByName(bossName);
+//					if (mailAndWage != null && mailAndWage.length == 2) {
+//						String combinedInfo = mailAndWage[0] + " " + mailAndWage[1];
+//						switch (i) {
+//						case 0:
+//							people.setBoss1(combinedInfo);
+//							break;
+//						case 1:
+//							people.setBoss2(combinedInfo);
+//							break;
+//						case 2:
+//							people.setBoss3(combinedInfo);
+//							break;
+//						}
+//					}
+//				}
+
+//				for (String a : playerRepository.findByNAME()) {
+//					if (setupParts.length == 1) {
+//						if (setupParts[0].equals(a)) {
+//							people.setBoss1(player.getMail());
+//						}
+//					}
+//
+//					if (setupParts.length == 2) {
+//						people.setBoss1(player.getMail());
+//						people.setBoss2(player.getMail());
+//					}
+//
+//					if (setupParts.length == 3) {
+//						people.setBoss1(player.getMail());
+//						people.setBoss2(player.getMail());
+//						people.setBoss3(player.getMail());
+//					}
+//				}
+
+				return people;
+			}
 		};
 	}
 
@@ -72,7 +137,7 @@ public class PeopleCsvConfig {
 		writer.setHeaderCallback(new FlatFileHeaderCallback() {
 			@Override
 			public void writeHeader(Writer writer) throws IOException {
-				writer.write("PersonalName,PersonalAge,PersonalGender,PersonalMail");
+				writer.write("PersonalName,PersonalAge,PersonalGender,Boss1,Boss2,Boss3");
 			}
 		});
 		writer.setLineAggregator(new DelimitedLineAggregator<People>() {
@@ -81,7 +146,7 @@ public class PeopleCsvConfig {
 				setFieldExtractor(new BeanWrapperFieldExtractor<People>() {
 					{
 						setNames(new String[] { "personalName", "personalAge", "personalGender",
-								"personalMail" });
+								"boss1", "boss2", "boss3" });
 					}
 				});
 			}
