@@ -1,41 +1,32 @@
 package com.sample.project.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 public class People {
 
-	@Id
-	@Column(name = "PersonalName")
 	private String personalName;
 
-	@Column(name = "PersonalAge")
 	private String personalAge;
 
-	@Column(name = "PersonalGender")
 	private String personalGender;
 
-	@Column(name = "PersonalMail")
 	private String personalMail;
 
-	@Column(name = "PersonalWage")
 	private String personalWage;
 
-	@Column(name = "boss1")
 	private String boss1;
 
-	@Column(name = "boss2")
 	private String boss2;
 
-	@Column(name = "boss3")
 	private String boss3;
+
+	private String codeName;
 
 	public People() {
 
 	}
 
 	public People(String personalName, String personalAge, String personalGender,
-			String personalMail, String personalWage, String boss1, String boss2, String boss3) {
+			String personalMail, String personalWage, String boss1, String boss2, String boss3,
+			String codeName) {
 		super();
 		this.personalName = personalName;
 		this.personalAge = personalAge;
@@ -45,6 +36,7 @@ public class People {
 		this.boss1 = boss1;
 		this.boss2 = boss2;
 		this.boss3 = boss3;
+		this.codeName = codeName;
 	}
 
 	/**
@@ -157,6 +149,20 @@ public class People {
 	 */
 	public void setBoss3(String boss3) {
 		this.boss3 = boss3;
+	}
+
+	/**
+	 * @return the codeName
+	 */
+	public String getCodeName() {
+		return codeName;
+	}
+
+	/**
+	 * @param codeName the codeName to set
+	 */
+	public void setCodeName(String codeName) {
+		this.codeName = codeName;
 	}
 
 }
