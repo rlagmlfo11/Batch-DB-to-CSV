@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Table(name = "PLAYER")
 public class Player {
 
-	@Id
 	@Column(name = "NAME")
 	private String name;
 
@@ -30,11 +29,25 @@ public class Player {
 	@Column(name = "BOSS")
 	private String boss;
 
+	@Column(name = "DEPARTMENT")
+	private String department;
+
+	@Column(name = "RECEIVEDDATE")
+	private String receivedDate;
+
+	@Column(name = "DEPARTMENTCODE")
+	private String departmentCode;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	public Player() {
 
 	}
 
-	public Player(String name, String age, String gender, String mail, String wage, String boss) {
+	public Player(String name, String age, String gender, String mail, String wage, String boss,
+			String department, String receivedDate, String departmentCode, Long id) {
 		super();
 		this.name = name;
 		this.age = age;
@@ -42,6 +55,10 @@ public class Player {
 		this.mail = mail;
 		this.wage = wage;
 		this.boss = boss;
+		this.department = department;
+		this.receivedDate = receivedDate;
+		this.departmentCode = departmentCode;
+		this.id = id;
 	}
 
 	/**
@@ -126,6 +143,62 @@ public class Player {
 	 */
 	public void setBoss(String boss) {
 		this.boss = boss;
+	}
+
+	/**
+	 * @return the department
+	 */
+	public String getDepartment() {
+		return department;
+	}
+
+	/**
+	 * @param department the department to set
+	 */
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	/**
+	 * @return the receivedDate
+	 */
+	public String getReceivedDate() {
+		return receivedDate;
+	}
+
+	/**
+	 * @param receivedDate the receivedDate to set
+	 */
+	public void setReceivedDate(String receivedDate) {
+		this.receivedDate = receivedDate;
+	}
+
+	/**
+	 * @return the departmentCode
+	 */
+	public String getDepartmentCode() {
+		return departmentCode;
+	}
+
+	/**
+	 * @param departmentCode the departmentCode to set
+	 */
+	public void setDepartmentCode(String departmentCode) {
+		this.departmentCode = departmentCode;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }
