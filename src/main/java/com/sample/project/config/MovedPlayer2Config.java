@@ -87,55 +87,62 @@ public class MovedPlayer2Config {
 			@Override
 			public MovedPlayer process(Player player) throws Exception {
 				String latestReceivedDate = playerRepository.findNewDate();
+
 				MovedPlayer movedPlayer = new MovedPlayer();
 				movedPlayer.setName(player.getName());
 
 				Player previousRecord = lastSeenPlayerRecord.get(player.getName());
 
-				// Check if the player is a man and handle records accordingly
-				if ("man".equals(player.getGender())) {
-					// Check for new records or updates
-					if (player.getReceivedDate().equals(latestReceivedDate)) {
-						if (previousRecord == null) {
-							// New Entry
-							movedPlayer.setCategory("New Records");
-							movedPlayer.setNewDepartment(player.getDepartment());
-							movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
-							movedPlayer.setMail(player.getMail());
-							movedPlayer.setDate(formattedDate);
-						} else {
-							boolean departmentChanged = !player.getDepartmentCode()
-									.equals(previousRecord.getDepartmentCode());
-							boolean mailChanged = !player.getMail()
-									.equals(previousRecord.getMail());
-
-							// Update due to department code change or mail change
-							if (departmentChanged || mailChanged) {
-								movedPlayer.setCategory("Update");
-								movedPlayer.setNewDepartment(player.getDepartment());
-								movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
-								movedPlayer.setOldDepartment(previousRecord.getDepartment());
-								movedPlayer
-										.setOldDepartmentCode(previousRecord.getDepartmentCode());
-								movedPlayer.setMail(player.getMail());
-								movedPlayer.setDate(formattedDate);
-							} else {
-								// No relevant changes
-								return null;
-							}
-						}
-						lastSeenPlayerRecord.put(player.getName(), player);
-						return movedPlayer;
+				if (player.getReceivedDate().equals(latestReceivedDate)) {
+					if (previousRecord == null) {
+						// This is a new entry
+						populateNewEntry(movedPlayer, player);
 					} else {
-						// Update the last seen record for future reference but do not process
-						// further
-						lastSeenPlayerRecord.put(player.getName(), player);
-						return null;
+						// Check what has changed
+						boolean departmentChanged = !player.getDepartmentCode()
+								.equals(previousRecord.getDepartmentCode());
+						boolean mailChanged = !player.getMail().equals(previousRecord.getMail());
+						boolean nameChanged = !player.getName().equals(previousRecord.getName());
+
+						if (departmentChanged && !mailChanged && !nameChanged) {
+							// Only department code has changed
+							movedPlayer.setCategory("Code Changed");
+						} else if (mailChanged || nameChanged) {
+							// Mail or name has changed
+							movedPlayer.setCategory("Update");
+						} else {
+							// No relevant changes to process
+							return null;
+						}
+
+						populateUpdateEntry(movedPlayer, player, previousRecord);
 					}
+
+					lastSeenPlayerRecord.put(player.getName(), player);
+					return movedPlayer;
 				} else {
-					// Ignore records for non-men
+					// Record is not for the latest date; update last seen but do not process
+					lastSeenPlayerRecord.put(player.getName(), player);
 					return null;
 				}
+			}
+
+			private void populateNewEntry(MovedPlayer movedPlayer, Player player) {
+				movedPlayer.setCategory("New Entry");
+				movedPlayer.setNewDepartment(player.getDepartment());
+				movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+				movedPlayer.setMail(player.getMail());
+				movedPlayer.setDate(formattedDate);
+			}
+
+			private void populateUpdateEntry(MovedPlayer movedPlayer, Player player,
+					Player previousRecord) {
+				movedPlayer.setNewDepartment(player.getDepartment());
+				movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+				movedPlayer.setOldDepartment(previousRecord.getDepartment());
+				movedPlayer.setOldDepartmentCode(previousRecord.getDepartmentCode());
+				movedPlayer.setMail(player.getMail());
+				movedPlayer.setDate(formattedDate);
 			}
 		};
 	}
