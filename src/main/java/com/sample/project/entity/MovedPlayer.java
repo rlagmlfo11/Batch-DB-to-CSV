@@ -33,9 +33,6 @@ public class MovedPlayer {
 	@Column(name = "NEWDEPARTMENTCODE")
 	public String newDepartmentCode;
 
-	@Column(name = "MAIL")
-	public String mail;
-
 	@Column(name = "DATE")
 	public String date;
 
@@ -44,8 +41,7 @@ public class MovedPlayer {
 	}
 
 	public MovedPlayer(Long id, String category, String name, String oldDepartment,
-			String oldDepartmentCode, String newDepartment, String newDepartmentCode, String mail,
-			String date) {
+			String oldDepartmentCode, String newDepartment, String newDepartmentCode, String date) {
 		super();
 		this.id = id;
 		this.category = category;
@@ -54,7 +50,6 @@ public class MovedPlayer {
 		this.oldDepartmentCode = oldDepartmentCode;
 		this.newDepartment = newDepartment;
 		this.newDepartmentCode = newDepartmentCode;
-		this.mail = mail;
 		this.date = date;
 	}
 
@@ -154,20 +149,6 @@ public class MovedPlayer {
 	 */
 	public void setNewDepartmentCode(String newDepartmentCode) {
 		this.newDepartmentCode = newDepartmentCode;
-	}
-
-	/**
-	 * @return the mail
-	 */
-	public String getMail() {
-		return mail;
-	}
-
-	/**
-	 * @param mail the mail to set
-	 */
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 
 	/**

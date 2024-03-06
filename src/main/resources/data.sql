@@ -25,7 +25,14 @@ values ('rr','6321/22/42/42','man','WON@gmail.com','34','cc|aa|qq','HH','2024020
 insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
 values ('zz','2121/22/42/466','man','fin@gmail.com','26','cc|bb|qq','II','20240201', '9999');
 
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('as','2121/22/42/466','woman','fin@gmail.com','26','cc|bb|qq','II','20240201', '9999');
 
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('ad','2121/22/42/466','woman','fin@gmail.com','26','cc|bb|qq','II','20240201', '9999');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('af','2121/22/42/466','woman','fin@gmail.com','26','cc|bb|qq','II','20240201', '9999');
 
 
 
@@ -73,3 +80,28 @@ values ('132QEE','2121/22/42/466','man','132QEE@gmail.com','99','cc|bb|qq','GG',
 
 insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
 values ('123QWE','2121/22/42/466','man','123QWE@gmail.com','99','cc|bb|qq','GG','20240301', '9999');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('af','2121/22/42/466','woman','fin@gmail.com','26','cc|bb|qq','II','20240301', '9999');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('ASDASD','2121/22/42/466','man','ASDASD@gmail.com','99','cc|bb|qq','GG','20240301', '9030');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values (null,'2121/22/42/466','man','apple@gmail.com','26','cc|bb|qq','II','20240301', '3333');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('banana','2121/22/42/466','man','banana@gmail.com','26','cc|bb|qq','II','20240301', '1111');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('ssibaddl','2121/22/42/466','man ','ssibal@gmail.com','26','cc|bb|qq','II','20240301', '9999');
+
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('pain','2121/22/42/466','man',null,'26','cc|bb|qq','II','20240301', '3333');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('zz','2121/22/42/466','man','ZZZZZZZZZ@gmail.com','26','cc|bb|qq','II','20240301', '9999');
+
+insert into PLAYER(name, age, gender, mail, wage, boss, department, receivedDate, departmentCode)
+values ('DDDDDDDDDD','21/22/42/4021','man','LIM@gmail.com','37','zz|bb|qq','DD','20240201', '4444');

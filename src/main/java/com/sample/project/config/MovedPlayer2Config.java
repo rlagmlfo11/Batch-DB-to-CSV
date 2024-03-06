@@ -81,7 +81,8 @@ public class MovedPlayer2Config {
 
 	@Bean
 	public ItemProcessor<Player, MovedPlayer> playerMoveProcessor() {
-		final Map<String, Player> lastSeenPlayerRecord = new HashMap<>();
+		final Map<String, Player> lastSeenByName = new HashMap<>();
+		final Map<String, Player> lastSeenByMail = new HashMap<>();
 
 		return new ItemProcessor<Player, MovedPlayer>() {
 			@Override
@@ -91,58 +92,35 @@ public class MovedPlayer2Config {
 				MovedPlayer movedPlayer = new MovedPlayer();
 				movedPlayer.setName(player.getName());
 
-				Player previousRecord = lastSeenPlayerRecord.get(player.getName());
+				Player seenByName = lastSeenByName.get(player.getName());
+				Player seenByMail = lastSeenByMail.get(player.getMail());
 
-				if (player.getReceivedDate().equals(latestReceivedDate)) {
-					if (previousRecord == null) {
+				boolean isNewName = lastSeenByName.get(player.getName()) == null;
+				boolean isNewMail = lastSeenByMail.get(player.getMail()) == null;
+
+				if (player.getReceivedDate().equals(latestReceivedDate)
+						&& player.getGender().equals("man")) {
+
+					if (seenByName == null && seenByMail == null) {
 						// This is a new entry
-						populateNewEntry(movedPlayer, player);
+						movedPlayer.setCategory("New");
+						movedPlayer.setNewDepartment(player.getDepartment());
+						movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+						movedPlayer.setDate(formattedDate);
 					} else {
-						// Check what has changed
-						boolean departmentChanged = !player.getDepartmentCode()
-								.equals(previousRecord.getDepartmentCode());
-						boolean mailChanged = !player.getMail().equals(previousRecord.getMail());
-						boolean nameChanged = !player.getName().equals(previousRecord.getName());
-
-						if (departmentChanged && !mailChanged && !nameChanged) {
-							// Only department code has changed
-							movedPlayer.setCategory("Code Changed");
-						} else if (mailChanged || nameChanged) {
-							// Mail or name has changed
-							movedPlayer.setCategory("Update");
-						} else {
-							// No relevant changes to process
-							return null;
-						}
-
-						populateUpdateEntry(movedPlayer, player, previousRecord);
+						return null;
 					}
 
-					lastSeenPlayerRecord.put(player.getName(), player);
+					lastSeenByName.put(player.getName(), player);
+					lastSeenByMail.put(player.getMail(), player);
 					return movedPlayer;
 				} else {
+
 					// Record is not for the latest date; update last seen but do not process
-					lastSeenPlayerRecord.put(player.getName(), player);
+					lastSeenByName.put(player.getName(), player);
+					lastSeenByMail.put(player.getMail(), player);
 					return null;
 				}
-			}
-
-			private void populateNewEntry(MovedPlayer movedPlayer, Player player) {
-				movedPlayer.setCategory("New Entry");
-				movedPlayer.setNewDepartment(player.getDepartment());
-				movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
-				movedPlayer.setMail(player.getMail());
-				movedPlayer.setDate(formattedDate);
-			}
-
-			private void populateUpdateEntry(MovedPlayer movedPlayer, Player player,
-					Player previousRecord) {
-				movedPlayer.setNewDepartment(player.getDepartment());
-				movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
-				movedPlayer.setOldDepartment(previousRecord.getDepartment());
-				movedPlayer.setOldDepartmentCode(previousRecord.getDepartmentCode());
-				movedPlayer.setMail(player.getMail());
-				movedPlayer.setDate(formattedDate);
 			}
 		};
 	}
