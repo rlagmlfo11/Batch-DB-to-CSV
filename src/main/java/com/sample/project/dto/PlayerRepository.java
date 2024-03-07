@@ -17,4 +17,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 	@Query("SELECT MAX(p.receivedDate) FROM Player p")
 	String findNewDate();
 
+	@Query("SELECT p.name FROM Player p WHERE p.receivedDate =: receivedDate")
+	String findPlayer(@Param("receivedDate") String receivedDate);
+
 }

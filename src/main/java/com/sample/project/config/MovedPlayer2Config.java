@@ -79,51 +79,122 @@ public class MovedPlayer2Config {
 		return databaseReader;
 	}
 
+//	@Bean
+//	public ItemProcessor<Player, MovedPlayer> playerMoveProcessor() {
+//		final Map<String, Player> lastSeenByName = new HashMap<>();
+//		final Map<String, Player> lastSeenByMail = new HashMap<>();
+//
+//		return new ItemProcessor<Player, MovedPlayer>() {
+//			@Override
+//			public MovedPlayer process(Player player) throws Exception {
+//				String latestReceivedDate = playerRepository.findNewDate();
+//				String previousReceivedDate = playerRepository.findOldDate();
+//
+//				MovedPlayer movedPlayer = new MovedPlayer();
+//				movedPlayer.setName(player.getName());
+//				movedPlayer.setDate(formattedDate); // Make sure formattedDate is correctly defined
+//
+//				Player seenByName = lastSeenByName.get(player.getName());
+//				Player seenByMail = lastSeenByMail.get(player.getMail());
+//
+//				boolean isNewEntry = seenByName == null && seenByMail == null;
+//				boolean isUpdate = false;
+//
+////				if (!player.getReceivedDate().equals(latestReceivedDate)) {
+////					return null;
+////				}
+//
+//				// If the player was seen before, check if it qualifies for an update
+//				if (!isNewEntry) {
+//					Player existingRecord = seenByName != null ? seenByName : seenByMail;
+//					boolean departmentChanged = existingRecord != null && !existingRecord
+//							.getDepartmentCode().equals(player.getDepartmentCode());
+//
+//					// Check if the record qualifies as an update
+//					if (departmentChanged) {
+//						// Only consider it an update if the department code has changed
+//						isUpdate = true;
+//						movedPlayer.setOldDepartment(existingRecord.getDepartment());
+//						movedPlayer.setOldDepartmentCode(existingRecord.getDepartmentCode());
+//					}
+//				}
+//
+//				if (isNewEntry) {
+//					movedPlayer.setCategory("New");
+//					movedPlayer.setNewDepartment(player.getDepartment());
+//					movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+//
+//				} else if (isUpdate) {
+//					movedPlayer.setCategory("UPDATE");
+//					movedPlayer.setNewDepartment(player.getDepartment());
+//					movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+//				} else {
+//					lastSeenByName.put(player.getName(), player);
+//					lastSeenByMail.put(player.getMail(), player);
+//					return null;
+//				}
+//
+//				// Update tracking maps with the current record for future reference
+//				lastSeenByName.put(player.getName(), player);
+//				lastSeenByMail.put(player.getMail(), player);
+//
+//				return movedPlayer;
+//			}
+//		};
+//	}
+
 	@Bean
 	public ItemProcessor<Player, MovedPlayer> playerMoveProcessor() {
-		final Map<String, Player> lastSeenByName = new HashMap<>();
-		final Map<String, Player> lastSeenByMail = new HashMap<>();
+	    final Map<String, Player> lastSeenByName = new HashMap<>();
+	    final Map<String, Player> lastSeenByMail = new HashMap<>();
+	    String latestReceivedDate = playerRepository.findNewDate();
 
-		return new ItemProcessor<Player, MovedPlayer>() {
-			@Override
-			public MovedPlayer process(Player player) throws Exception {
-				String latestReceivedDate = playerRepository.findNewDate();
+	    return new ItemProcessor<Player, MovedPlayer>() {
+	        @Override
+	        public MovedPlayer process(Player player) throws Exception {
+	            MovedPlayer movedPlayer = new MovedPlayer();
+	            movedPlayer.setName(player.getName());
 
-				MovedPlayer movedPlayer = new MovedPlayer();
-				movedPlayer.setName(player.getName());
+	            Player seenByName = lastSeenByName.get(player.getName());
+	            Player seenByMail = lastSeenByMail.get(player.getMail());
 
-				Player seenByName = lastSeenByName.get(player.getName());
-				Player seenByMail = lastSeenByMail.get(player.getMail());
+	            if (player.getReceivedDate().equals(latestReceivedDate) && player.getGender().equals("man")) {
+	                if (seenByName == null && seenByMail == null) {
+	                    movedPlayer.setCategory("New");
+	                    movedPlayer.setNewDepartment(player.getDepartment());
+	                    movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+	                } else {
+	                    // Determine if department has changed
+	                    boolean departmentChanged = 
+	                        (seenByName != null && !player.getDepartmentCode().equals(seenByName.getDepartmentCode())) ||
+	                        (seenByMail != null && !player.getDepartmentCode().equals(seenByMail.getDepartmentCode()));
 
-				boolean isNewName = lastSeenByName.get(player.getName()) == null;
-				boolean isNewMail = lastSeenByMail.get(player.getMail()) == null;
+	                    if (departmentChanged) {
+	                        movedPlayer.setCategory("UPDATE");
+	                        Player existingRecord = seenByName != null ? seenByName : seenByMail;
+	                        movedPlayer.setOldDepartment(existingRecord != null ? existingRecord.getDepartment() : "");
+	                        movedPlayer.setOldDepartmentCode(existingRecord != null ? existingRecord.getDepartmentCode() : "");
+	                        movedPlayer.setNewDepartment(player.getDepartment());
+	                        movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
+	                    } else {
+	                        return null;
+	                    }
+	                }
 
-				if (player.getReceivedDate().equals(latestReceivedDate)
-						&& player.getGender().equals("man")) {
+	                // Update the maps with the latest information
+	                lastSeenByName.put(player.getName(), player);
+	                lastSeenByMail.put(player.getMail(), player);
 
-					if (seenByName == null && seenByMail == null) {
-						// This is a new entry
-						movedPlayer.setCategory("New");
-						movedPlayer.setNewDepartment(player.getDepartment());
-						movedPlayer.setNewDepartmentCode(player.getDepartmentCode());
-						movedPlayer.setDate(formattedDate);
-					} else {
-						return null;
-					}
-
-					lastSeenByName.put(player.getName(), player);
-					lastSeenByMail.put(player.getMail(), player);
-					return movedPlayer;
-				} else {
-
-					// Record is not for the latest date; update last seen but do not process
-					lastSeenByName.put(player.getName(), player);
-					lastSeenByMail.put(player.getMail(), player);
-					return null;
-				}
-			}
-		};
+	                return movedPlayer;
+	            }
+	            // Update the tracking maps even for records not processed as new or update
+	            lastSeenByName.put(player.getName(), player);
+	            lastSeenByMail.put(player.getMail(), player);
+	            return null;
+	        }
+	    };
 	}
+
 
 	@Bean
 	public Tasklet deleteOldMovedPlayerRecordsTasklet(DataSource dataSource) {
